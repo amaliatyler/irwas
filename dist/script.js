@@ -80,6 +80,24 @@ const checkNumInputs = selector => {
 
 /***/ }),
 
+/***/ "./src/js/modules/clearState.js":
+/*!**************************************!*\
+  !*** ./src/js/modules/clearState.js ***!
+  \**************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const clearState = stateObj => {
+  for (const key in stateObj) {
+    delete stateObj[key];
+  }
+  return stateObj;
+};
+/* harmony default export */ __webpack_exports__["default"] = (clearState);
+
+/***/ }),
+
 /***/ "./src/js/modules/forms.js":
 /*!*********************************!*\
   !*** ./src/js/modules/forms.js ***!
@@ -89,10 +107,13 @@ const checkNumInputs = selector => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _checkNumInputs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./checkNumInputs */ "./src/js/modules/checkNumInputs.js");
+/* harmony import */ var _clearState__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./clearState */ "./src/js/modules/clearState.js");
+
 
 const forms = state => {
   const form = document.querySelectorAll('form'),
-    inputs = document.querySelectorAll('input');
+    inputs = document.querySelectorAll('input'),
+    parentModal = document.querySelectorAll('[data-modal]');
   (0,_checkNumInputs__WEBPACK_IMPORTED_MODULE_0__["default"])('input[name="user_phone"]');
   const message = {
     loading: 'Загрузка',
@@ -137,6 +158,10 @@ const forms = state => {
         setTimeout(() => {
           statusMessage.remove();
         }, 5000);
+        (0,_clearState__WEBPACK_IMPORTED_MODULE_1__["default"])(state);
+        setTimeout(() => {
+          item.closest('[data-modal]').style.display = 'none';
+        }, 2000);
       });
     });
   });
@@ -198,7 +223,8 @@ const modals = () => {
     const trigger = document.querySelectorAll(triggerSelector),
       modal = document.querySelector(modalSelector),
       close = document.querySelector(closeSelector),
-      windows = document.querySelectorAll('[data-modal]');
+      windows = document.querySelectorAll('[data-modal]'),
+      scroll = calcScroll();
     trigger.forEach(item => {
       item.addEventListener('click', event => {
         if (event.target) {
@@ -210,6 +236,7 @@ const modals = () => {
         });
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
+        document.body.style.marginRight = `${scroll}px`;
         // document.body.classList.add('modal-open');
       });
     });
@@ -221,6 +248,7 @@ const modals = () => {
       });
       modal.style.display = 'none';
       document.body.style.overflow = '';
+      document.body.style.Right = '0px';
       // document.body.classList.remove('modal-open');
     });
 
@@ -233,6 +261,7 @@ const modals = () => {
         });
         modal.style.display = 'none';
         document.body.style.overflow = '';
+        document.body.style.marginRight = '0px';
         // document.body.classList.remove('modal-open');
       }
     });
@@ -243,6 +272,17 @@ const modals = () => {
       document.querySelector(selector).style.display = 'block';
       document.body.style.overflow = 'hidden';
     }, time);
+  }
+  function calcScroll() {
+    let div = document.createElement('div');
+    div.style.width = '50px';
+    div.style.height = '50px';
+    div.style.overflowY = 'scroll';
+    div.style.visibility = 'hidden';
+    document.body.appendChild(div);
+    let scrollWidth = div.offsetWidth - div.clientWidth;
+    div.remove();
+    return scrollWidth;
   }
   bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
   bindModal('.phone_link', '.popup', '.popup_close');

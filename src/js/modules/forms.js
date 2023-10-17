@@ -1,8 +1,10 @@
 import checkNumInputs from './checkNumInputs';
+import clearState from './clearState';
 
 const forms = (state) => {
     const form = document.querySelectorAll('form'),
-          inputs = document.querySelectorAll('input');
+          inputs = document.querySelectorAll('input'),
+          parentModal = document.querySelectorAll('[data-modal]');
 
         checkNumInputs('input[name="user_phone"]');
 
@@ -59,8 +61,12 @@ const forms = (state) => {
                         setTimeout(() => {
                             statusMessage.remove();
                         }, 5000);
+                        clearState(state);
+                        setTimeout(() => {
+                            item.closest('[data-modal]').style.display = 'none';
+                        }, 2000);
                     })
-
+                
             });
         });
 }
